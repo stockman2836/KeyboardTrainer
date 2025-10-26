@@ -6,8 +6,11 @@ import Metrics from './components/Metrics';
 import WordDisplay from './components/WordDisplay';
 import ControlButtons from './components/ControlButtons';
 
+const WORDS_PER_BATCH = 20;
+
 function App() {
   const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
+  const [batchStartIndex, setBatchStartIndex] = useState<number>(0);
   const [userInput, setUserInput] = useState<string>('');
   
   // Метрики
@@ -26,6 +29,13 @@ function App() {
   useEffect(() => {
     loadInitialWords();
   }, []);
+
+  // Проверка, нужно ли загрузить новый батч слов
+  useEffect(() => {
+    if (currentWordIndex >= batchStartIndex + WORDS_PER_BATCH) {
+      setBatchStartIndex(currentWordIndex);
+    }
+  }, [currentWordIndex, batchStartIndex]);
 
   // Обработка клавиатуры
   useEffect(() => {
@@ -54,7 +64,7 @@ function App() {
         
         setTotalCharsTyped(prev => prev + typedWord.length);
         setCorrectChars(prev => prev + correct);
-        setCurrentWordIndex(currentWordIndex + 1);
+        setCurrentWordIndex(prev => prev + 1);
         setUserInput('');
 
         if (!startTime) {
@@ -112,6 +122,7 @@ function App() {
   const handleRestart = () => {
     restartGame();
     setCurrentWordIndex(0);
+    setBatchStartIndex(0);
     setUserInput('');
     setStartTime(null);
     setPausedTime(0);
@@ -131,8 +142,9 @@ function App() {
     );
   }
 
-  const currentWord = words[currentWordIndex];
-  const nextWords = words.slice(currentWordIndex + 1, currentWordIndex + 15);
+  // Получаем текущий батч слов
+  const currentBatchWords = words.slice(batchStartIndex, batchStartIndex + WORDS_PER_BATCH);
+  const relativeCurrentIndex = currentWordIndex - batchStartIndex;
 
   return (
     <div className="app">
@@ -146,8 +158,8 @@ function App() {
       />
 
       <WordDisplay 
-        currentWord={currentWord}
-        nextWords={nextWords}
+        words={currentBatchWords}
+        currentIndex={relativeCurrentIndex}
         userInput={gameStatus === 'playing' ? userInput : ''}
       />
 

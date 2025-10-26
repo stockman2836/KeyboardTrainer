@@ -86,7 +86,7 @@ h1 {
   background: #1e293b;
   padding: 60px 50px;
   border-radius: 24px;
-  min-height: 200px;
+  min-height: 280px;
   width: 100%;
   max-width: 1000px;
   border: 2px solid #334155;
@@ -108,35 +108,40 @@ h1 {
   width: 100%;
 }
 
-.current-word {
+.word {
   display: inline-flex;
-  gap: 2px;
+  color: #64748b;
+  font-weight: 400;
+  transition: all 0.3s ease;
 }
 
-.char {
+.word.active {
   color: #475569;
-  transition: all 0.2s ease;
   font-weight: 500;
 }
 
-.char.correct {
+.word.completed {
+  color: #334155;
+  opacity: 0.5;
+}
+
+.char {
+  transition: all 0.2s ease;
+}
+
+.word.active .char.correct {
   color: #22c55e;
   text-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
   font-weight: 600;
 }
 
-.char.incorrect {
+.word.active .char.incorrect {
   color: #ef4444;
   background: rgba(239, 68, 68, 0.2);
   border-radius: 6px;
   padding: 0 2px;
   text-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
   font-weight: 600;
-}
-
-.word {
-  color: #64748b;
-  font-weight: 400;
 }
 
 /* Кнопки управления */
@@ -243,6 +248,7 @@ h1 {
 
   .words-container {
     padding: 40px 30px;
+    min-height: 220px;
   }
 
   .words-wrapper {

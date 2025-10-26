@@ -1,47 +1,57 @@
 import React from 'react';
 
 interface WordDisplayProps {
-  currentWord: string;
-  nextWords: string[];
+  words: string[];
+  currentIndex: number;
   userInput: string;
 }
 
 const WordDisplay: React.FC<WordDisplayProps> = ({ 
-  currentWord, 
-  nextWords, 
+  words,
+  currentIndex,
   userInput 
 }) => {
-  const getCharClass = (charIndex: number): string => {
+  const getCharClass = (wordIndex: number, charIndex: number): string => {
+    // Если это не текущее слово
+    if (wordIndex !== currentIndex) {
+      return '';
+    }
+    
+    // Для текущего слова проверяем введенные символы
     if (charIndex >= userInput.length) {
       return '';
     }
     
-    if (userInput[charIndex] === currentWord[charIndex]) {
+    if (userInput[charIndex] === words[currentIndex][charIndex]) {
       return 'correct';
     } else {
       return 'incorrect';
     }
   };
 
+  const getWordClass = (wordIndex: number): string => {
+    if (wordIndex < currentIndex) {
+      return 'word completed';
+    } else if (wordIndex === currentIndex) {
+      return 'word active';
+    } else {
+      return 'word';
+    }
+  };
+
   return (
     <div className="words-container">
       <div className="words-wrapper">
-        {/* Текущее слово с проверкой букв */}
-        <span className="current-word">
-          {currentWord.split('').map((char, index) => (
-            <span
-              key={index}
-              className={`char ${getCharClass(index)}`}
-            >
-              {char}
-            </span>
-          ))}
-        </span>
-
-        {/* Следующие слова */}
-        {nextWords.map((word, index) => (
-          <span key={index} className="word">
-            {word}
+        {words.map((word, wordIndex) => (
+          <span key={wordIndex} className={getWordClass(wordIndex)}>
+            {word.split('').map((char, charIndex) => (
+              <span
+                key={charIndex}
+                className={`char ${getCharClass(wordIndex, charIndex)}`}
+              >
+                {char}
+              </span>
+            ))}
           </span>
         ))}
       </div>
