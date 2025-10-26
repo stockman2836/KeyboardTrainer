@@ -25,20 +25,20 @@ const WordDisplay: React.FC<WordDisplayProps> = ({
 
   return (
     <div className="words-container">
-      {/* Текущее слово с проверкой букв */}
-      <div className="current-word">
-        {currentWord.split('').map((char, index) => (
-          <span
-            key={index}
-            className={`char ${getCharClass(index)}`}
-          >
-            {char}
-          </span>
-        ))}
-      </div>
+      <div className="words-wrapper">
+        {/* Текущее слово с проверкой букв */}
+        <span className="current-word">
+          {currentWord.split('').map((char, index) => (
+            <span
+              key={index}
+              className={`char ${getCharClass(index)}`}
+            >
+              {char}
+            </span>
+          ))}
+        </span>
 
-      {/* Следующие слова */}
-      <div className="next-words">
+        {/* Следующие слова */}
         {nextWords.map((word, index) => (
           <span key={index} className="word">
             {word}
