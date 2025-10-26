@@ -37,15 +37,33 @@ function App() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value.toLowerCase();
-    setUserInput(value);
-    if (value.endsWith(' ')) {
-      const typedWord = value.trim();
-      const currentWord = words[currentWordIndex];
+    const currentWord = words[currentWordIndex];
 
+    if (value.length > 0 && value[value.length - 1] === ' ') {
+
+      const typedWord = value.trim();
+      
       if (typedWord === currentWord) {
+
         setCurrentWordIndex(currentWordIndex + 1);
         setUserInput('');
       }
+    } else if (value.length <= currentWord.length) {
+
+      setUserInput(value);
+    }
+  };
+
+  const getCharClass = (charIndex: number): string => {
+    if (charIndex >= userInput.length) {
+      return '';
+    }
+    
+    const currentWord = words[currentWordIndex];
+    if (userInput[charIndex] === currentWord[charIndex]) {
+      return 'correct';
+    } else {
+      return 'incorrect';
     }
   };
 
@@ -57,20 +75,34 @@ function App() {
     );
   }
 
+  const currentWord = words[currentWordIndex];
+
   return (
     <div className="app">
       <h1>Typing Trainer</h1>
       
       {}
       <div className="words-container">
-        {words.slice(currentWordIndex, currentWordIndex + 10).map((word, index) => (
-          <span
-            key={currentWordIndex + index}
-            className={index === 0 ? 'word active' : 'word'}
-          >
-            {word}
-          </span>
-        ))}
+        {}
+        <div className="current-word">
+          {currentWord.split('').map((char, index) => (
+            <span
+              key={index}
+              className={`char ${getCharClass(index)}`}
+            >
+              {char}
+            </span>
+          ))}
+        </div>
+
+        {}
+        <div className="next-words">
+          {words.slice(currentWordIndex + 1, currentWordIndex + 10).map((word, index) => (
+            <span key={currentWordIndex + 1 + index} className="word">
+              {word}
+            </span>
+          ))}
+        </div>
       </div>
 
       {}

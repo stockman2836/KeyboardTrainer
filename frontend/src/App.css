@@ -47,15 +47,37 @@ h1 {
   width: 100%;
 }
 
-.word {
-  color: #666;
-  transition: all 0.2s ease;
+.current-word {
+  display: flex;
+  gap: 2px;
+  margin-right: 12px;
 }
 
-.word.active {
-  color: #000;
+.char {
+  color: #999;
+  transition: color 0.1s ease;
+}
+
+.char.correct {
+  color: #22c55e;
   font-weight: bold;
-  text-decoration: underline;
+}
+
+.char.incorrect {
+  color: #ef4444;
+  font-weight: bold;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 3px;
+}
+
+.next-words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.word {
+  color: #666;
 }
 
 .typing-input {
