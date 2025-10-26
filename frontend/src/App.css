@@ -9,25 +9,27 @@ body {
   background: #0f172a;
   min-height: 100vh;
   color: white;
+  overflow-x: hidden;
 }
 
 .app {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 60px 20px;
+  padding: 40px 20px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 30px;
 }
 
 h1 {
   color: white;
-  font-size: 56px;
-  margin-bottom: 50px;
+  font-size: 64px;
   font-weight: 700;
-  letter-spacing: -1px;
+  letter-spacing: -2px;
+  text-align: center;
 }
 
 .loading {
@@ -41,196 +43,191 @@ h1 {
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   width: 100%;
-  margin-bottom: 40px;
+  max-width: 900px;
 }
 
 .metric {
   background: #1e293b;
-  padding: 25px;
-  border-radius: 16px;
+  padding: 30px 20px;
+  border-radius: 20px;
   text-align: center;
-  border: 1px solid #334155;
+  border: 2px solid #334155;
   transition: all 0.3s ease;
 }
 
 .metric:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   border-color: #475569;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .metric-value {
-  font-size: 48px;
+  font-size: 52px;
   font-weight: 700;
   background: linear-gradient(135deg, #3b82f6, #8b5cf6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  line-height: 1;
 }
 
 .metric-label {
-  font-size: 12px;
+  font-size: 13px;
   color: #94a3b8;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: 2px;
   font-weight: 600;
 }
 
 /* Контейнер со словами */
 .words-container {
   background: #1e293b;
-  padding: 40px;
-  border-radius: 20px;
-  margin-bottom: 30px;
-  min-height: 120px;
+  padding: 60px 50px;
+  border-radius: 24px;
+  min-height: 200px;
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
-  font-size: 36px;
+  gap: 20px;
+  font-size: 42px;
   width: 100%;
-  border: 1px solid #334155;
+  max-width: 1000px;
+  border: 2px solid #334155;
   align-items: center;
   justify-content: center;
   font-family: 'Monaco', 'Courier New', monospace;
+  line-height: 1.6;
 }
 
 .current-word {
   display: flex;
   gap: 2px;
-  margin-right: 16px;
+  margin-right: 20px;
 }
 
 .char {
   color: #475569;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
+  font-weight: 500;
 }
 
 .char.correct {
   color: #22c55e;
-  text-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+  text-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+  font-weight: 600;
 }
 
 .char.incorrect {
   color: #ef4444;
-  background: rgba(239, 68, 68, 0.15);
-  border-radius: 4px;
-  text-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.2);
+  border-radius: 6px;
+  padding: 0 2px;
+  text-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+  font-weight: 600;
 }
 
 .next-words {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 20px;
 }
 
 .word {
   color: #64748b;
-}
-
-/* Инпут */
-.typing-input {
-  width: 100%;
-  padding: 25px;
-  font-size: 28px;
-  border: 2px solid #334155;
-  border-radius: 16px;
-  background: #1e293b;
-  font-family: 'Monaco', 'Courier New', monospace;
-  outline: none;
-  transition: all 0.3s ease;
-  color: white;
-  text-align: center;
-}
-
-.typing-input::placeholder {
-  color: transparent;
-}
-
-.typing-input:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-}
-
-.typing-input:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  font-weight: 400;
 }
 
 /* Кнопки управления */
 .control-buttons {
   display: flex;
-  gap: 15px;
-  margin-top: 30px;
+  gap: 20px;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .btn {
-  padding: 16px 32px;
+  padding: 18px 40px;
   font-size: 16px;
   font-weight: 600;
   border: none;
-  border-radius: 12px;
+  border-radius: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
   font-family: 'Inter', sans-serif;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
 .btn:active {
-  transform: translateY(0);
+  transform: translateY(-1px);
 }
 
 .btn-start,
 .btn-resume {
-  background: #22c55e;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
   color: white;
 }
 
 .btn-start:hover,
 .btn-resume:hover {
-  background: #16a34a;
-  box-shadow: 0 10px 25px rgba(34, 197, 94, 0.4);
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  box-shadow: 0 10px 30px rgba(34, 197, 94, 0.5);
 }
 
 .btn-pause {
-  background: #f59e0b;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
   color: white;
 }
 
 .btn-pause:hover {
-  background: #d97706;
-  box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
+  background: linear-gradient(135deg, #d97706, #b45309);
+  box-shadow: 0 10px 30px rgba(245, 158, 11, 0.5);
 }
 
 .btn-restart {
-  background: #ef4444;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
   color: white;
 }
 
 .btn-restart:hover {
-  background: #dc2626;
-  box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4);
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.5);
 }
 
 .loading-indicator {
-  margin-top: 20px;
   color: #64748b;
   font-size: 14px;
   text-align: center;
   font-weight: 500;
 }
 
+.hint {
+  color: #64748b;
+  font-size: 18px;
+  text-align: center;
+  font-weight: 500;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
 /* Адаптив */
 @media (max-width: 768px) {
   h1 {
-    font-size: 36px;
-    margin-bottom: 30px;
+    font-size: 42px;
   }
 
   .metrics {
@@ -239,16 +236,16 @@ h1 {
   }
 
   .metric-value {
-    font-size: 36px;
+    font-size: 40px;
   }
 
   .words-container {
-    font-size: 28px;
-    padding: 30px;
+    font-size: 32px;
+    padding: 40px 30px;
   }
 
-  .typing-input {
-    font-size: 24px;
-    padding: 20px;
+  .btn {
+    padding: 16px 32px;
+    font-size: 14px;
   }
 }

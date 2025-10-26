@@ -1,10 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import { useInfiniteWords } from './hooks/useInfiniteWords';
 import { useTypingGame } from './hooks/useTypingGame';
 import Metrics from './components/Metrics';
 import WordDisplay from './components/WordDisplay';
-import TypingInput from './components/TypingInput';
 import ControlButtons from './components/ControlButtons';
 
 function App() {
@@ -19,8 +18,6 @@ function App() {
   const [accuracy, setAccuracy] = useState<number>(100);
   const [totalCharsTyped, setTotalCharsTyped] = useState<number>(0);
   const [correctChars, setCorrectChars] = useState<number>(0);
-  
-  const inputRef = useRef<HTMLInputElement | null>(null);
 
   // Используем хуки
   const { words, isLoading, isLoadingMore, loadInitialWords } = useInfiniteWords(currentWordIndex);
@@ -30,11 +27,55 @@ function App() {
     loadInitialWords();
   }, []);
 
+  // Обработка клавиатуры
   useEffect(() => {
-    if (gameStatus === 'playing') {
-      inputRef.current?.focus();
-    }
-  }, [gameStatus]);
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (gameStatus !== 'playing') return;
+
+      // Игнорируем специальные клавиши
+      if (e.key.length > 1 && e.key !== 'Backspace' && e.key !== ' ') return;
+
+      e.preventDefault();
+
+      const currentWord = words[currentWordIndex];
+
+      if (e.key === 'Backspace') {
+        setUserInput(prev => prev.slice(0, -1));
+      } else if (e.key === ' ') {
+        // Пробел - проверяем слово
+        const typedWord = userInput;
+        
+        let correct = 0;
+        for (let i = 0; i < typedWord.length; i++) {
+          if (i < currentWord.length && typedWord[i] === currentWord[i]) {
+            correct++;
+          }
+        }
+        
+        setTotalCharsTyped(prev => prev + typedWord.length);
+        setCorrectChars(prev => prev + correct);
+        setCurrentWordIndex(currentWordIndex + 1);
+        setUserInput('');
+
+        if (!startTime) {
+          setStartTime(Date.now());
+        }
+      } else {
+        // Обычная буква
+        const char = e.key.toLowerCase();
+        if (char.length === 1 && userInput.length < currentWord.length) {
+          setUserInput(prev => prev + char);
+          
+          if (!startTime) {
+            setStartTime(Date.now());
+          }
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [gameStatus, userInput, currentWordIndex, words, startTime]);
 
   // Обновление метрик в реальном времени
   useEffect(() => {
@@ -82,35 +123,6 @@ function App() {
     loadInitialWords();
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    if (gameStatus !== 'playing') return;
-
-    const value = e.target.value.toLowerCase();
-    const currentWord = words[currentWordIndex];
-
-    if (!startTime && value.length === 1) {
-      setStartTime(Date.now());
-    }
-
-    if (value.length > 0 && value[value.length - 1] === ' ') {
-      const typedWord = value.trim();
-      
-      let correct = 0;
-      for (let i = 0; i < typedWord.length; i++) {
-        if (i < currentWord.length && typedWord[i] === currentWord[i]) {
-          correct++;
-        }
-      }
-      
-      setTotalCharsTyped(prev => prev + typedWord.length);
-      setCorrectChars(prev => prev + correct);
-      setCurrentWordIndex(currentWordIndex + 1);
-      setUserInput('');
-    } else if (value.length <= currentWord.length) {
-      setUserInput(value);
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="app">
@@ -120,7 +132,7 @@ function App() {
   }
 
   const currentWord = words[currentWordIndex];
-  const nextWords = words.slice(currentWordIndex + 1, currentWordIndex + 10);
+  const nextWords = words.slice(currentWordIndex + 1, currentWordIndex + 15);
 
   return (
     <div className="app">
@@ -139,12 +151,6 @@ function App() {
         userInput={gameStatus === 'playing' ? userInput : ''}
       />
 
-      <TypingInput 
-        value={userInput}
-        onChange={handleInputChange}
-        inputRef={inputRef}
-      />
-
       <ControlButtons
         gameStatus={gameStatus}
         onStart={handleStart}
@@ -155,6 +161,12 @@ function App() {
       {isLoadingMore && (
         <div className="loading-indicator">
           Loading more words...
+        </div>
+      )}
+
+      {gameStatus === 'idle' && (
+        <div className="hint">
+          Press START and begin typing!
         </div>
       )}
     </div>
