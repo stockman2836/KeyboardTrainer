@@ -126,6 +126,13 @@ h1 {
 .char {
   transition: all 0.2s ease;
   color: #64748b;
+  position: relative;
+}
+
+.char.current {
+  color: #94a3b8;
+  border-bottom: 3px solid #3b82f6;
+  animation: blink 1s ease-in-out infinite;
 }
 
 .char.correct {
@@ -141,6 +148,23 @@ h1 {
   padding: 0 2px;
   text-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
   font-weight: 600;
+}
+
+/* Индикатор пробела */
+.space-indicator {
+  color: #3b82f6;
+  font-weight: bold;
+  margin-left: -10px;
+  animation: blink 1s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
 }
 
 /* Кнопки управления */

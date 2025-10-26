@@ -34,6 +34,11 @@ const WordDisplay: React.FC<WordDisplayProps> = ({
     
     // Если это текущее слово, проверяем по userInput
     if (wordIndex === currentIndex) {
+      // Добавляем подчеркивание для текущей позиции
+      if (charIndex === userInput.length) {
+        return 'current';
+      }
+      
       if (charIndex >= userInput.length) {
         return '';
       }
@@ -58,20 +63,32 @@ const WordDisplay: React.FC<WordDisplayProps> = ({
     }
   };
 
+  // Проверяем, нужно ли показать подчеркивание пробела
+  const shouldShowSpaceUnderline = (wordIndex: number): boolean => {
+    if (wordIndex !== currentIndex) return false;
+    const currentWord = words[currentIndex];
+    return userInput.length === currentWord.length;
+  };
+
   return (
     <div className="words-container">
       <div className="words-wrapper">
         {words.map((word, wordIndex) => (
-          <span key={wordIndex} className={getWordClass(wordIndex)}>
-            {word.split('').map((char, charIndex) => (
-              <span
-                key={charIndex}
-                className={`char ${getCharClass(wordIndex, charIndex)}`}
-              >
-                {char}
-              </span>
-            ))}
-          </span>
+          <React.Fragment key={wordIndex}>
+            <span className={getWordClass(wordIndex)}>
+              {word.split('').map((char, charIndex) => (
+                <span
+                  key={charIndex}
+                  className={`char ${getCharClass(wordIndex, charIndex)}`}
+                >
+                  {char}
+                </span>
+              ))}
+            </span>
+            {shouldShowSpaceUnderline(wordIndex) && (
+              <span className="space-indicator">_</span>
+            )}
+          </React.Fragment>
         ))}
       </div>
     </div>
