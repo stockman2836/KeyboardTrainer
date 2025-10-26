@@ -1,32 +1,51 @@
 import React from 'react';
 
+interface WordResult {
+  typed: string;
+  correct: boolean[];
+}
+
 interface WordDisplayProps {
   words: string[];
   currentIndex: number;
   userInput: string;
+  wordResults: Map<number, WordResult>;
+  batchStartIndex: number;
 }
 
 const WordDisplay: React.FC<WordDisplayProps> = ({ 
   words,
   currentIndex,
-  userInput 
+  userInput,
+  wordResults,
+  batchStartIndex
 }) => {
   const getCharClass = (wordIndex: number, charIndex: number): string => {
-    // Если это не текущее слово
-    if (wordIndex !== currentIndex) {
+    const absoluteWordIndex = batchStartIndex + wordIndex;
+    
+    // Если слово уже завершено, берем результаты из сохраненных
+    if (wordResults.has(absoluteWordIndex)) {
+      const result = wordResults.get(absoluteWordIndex)!;
+      if (charIndex < result.correct.length) {
+        return result.correct[charIndex] ? 'correct' : 'incorrect';
+      }
       return '';
     }
     
-    // Для текущего слова проверяем введенные символы
-    if (charIndex >= userInput.length) {
-      return '';
+    // Если это текущее слово, проверяем по userInput
+    if (wordIndex === currentIndex) {
+      if (charIndex >= userInput.length) {
+        return '';
+      }
+      
+      if (userInput[charIndex] === words[currentIndex][charIndex]) {
+        return 'correct';
+      } else {
+        return 'incorrect';
+      }
     }
     
-    if (userInput[charIndex] === words[currentIndex][charIndex]) {
-      return 'correct';
-    } else {
-      return 'incorrect';
-    }
+    return '';
   };
 
   const getWordClass = (wordIndex: number): string => {

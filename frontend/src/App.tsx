@@ -8,10 +8,16 @@ import ControlButtons from './components/ControlButtons';
 
 const WORDS_PER_BATCH = 20;
 
+interface WordResult {
+  typed: string;
+  correct: boolean[];
+}
+
 function App() {
   const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
   const [batchStartIndex, setBatchStartIndex] = useState<number>(0);
   const [userInput, setUserInput] = useState<string>('');
+  const [wordResults, setWordResults] = useState<Map<number, WordResult>>(new Map());
   
   // Метрики
   const [startTime, setStartTime] = useState<number | null>(null);
@@ -34,6 +40,8 @@ function App() {
   useEffect(() => {
     if (currentWordIndex >= batchStartIndex + WORDS_PER_BATCH) {
       setBatchStartIndex(currentWordIndex);
+      // Очищаем результаты предыдущего батча
+      setWordResults(new Map());
     }
   }, [currentWordIndex, batchStartIndex]);
 
@@ -52,15 +60,23 @@ function App() {
       if (e.key === 'Backspace') {
         setUserInput(prev => prev.slice(0, -1));
       } else if (e.key === ' ') {
-        // Пробел - проверяем слово
+        // Пробел - сохраняем результат и проверяем слово
         const typedWord = userInput;
         
+        // Сохраняем результаты для каждой буквы
+        const correctness: boolean[] = [];
         let correct = 0;
-        for (let i = 0; i < typedWord.length; i++) {
-          if (i < currentWord.length && typedWord[i] === currentWord[i]) {
-            correct++;
-          }
+        
+        for (let i = 0; i < Math.max(typedWord.length, currentWord.length); i++) {
+          const isCorrect = i < typedWord.length && i < currentWord.length && typedWord[i] === currentWord[i];
+          correctness.push(isCorrect);
+          if (isCorrect) correct++;
         }
+        
+        setWordResults(prev => new Map(prev).set(currentWordIndex, {
+          typed: typedWord,
+          correct: correctness
+        }));
         
         setTotalCharsTyped(prev => prev + typedWord.length);
         setCorrectChars(prev => prev + correct);
@@ -124,6 +140,7 @@ function App() {
     setCurrentWordIndex(0);
     setBatchStartIndex(0);
     setUserInput('');
+    setWordResults(new Map());
     setStartTime(null);
     setPausedTime(0);
     setWpm(0);
@@ -161,6 +178,8 @@ function App() {
         words={currentBatchWords}
         currentIndex={relativeCurrentIndex}
         userInput={gameStatus === 'playing' ? userInput : ''}
+        wordResults={wordResults}
+        batchStartIndex={batchStartIndex}
       />
 
       <ControlButtons
