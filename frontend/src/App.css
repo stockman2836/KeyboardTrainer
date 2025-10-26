@@ -24,13 +24,44 @@ body {
 h1 {
   color: white;
   font-size: 48px;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .loading {
   color: white;
   font-size: 24px;
+}
+
+/* Метрики */
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.metric {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.metric-value {
+  font-size: 36px;
+  font-weight: bold;
+  color: #667eea;
+  margin-bottom: 5px;
+}
+
+.metric-label {
+  font-size: 14px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .words-container {
@@ -96,11 +127,4 @@ h1 {
 .typing-input:focus {
   box-shadow: 0 5px 30px rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);
-}
-
-.stats {
-  margin-top: 20px;
-  color: white;
-  font-size: 20px;
-  text-align: center;
 }
