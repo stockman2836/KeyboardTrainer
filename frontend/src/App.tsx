@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import './App.css';
 import { useInfiniteWords } from './hooks/useInfiniteWords';
+import { useTypingGame } from './hooks/useTypingGame';
 import Metrics from './components/Metrics';
 import WordDisplay from './components/WordDisplay';
 import TypingInput from './components/TypingInput';
+import ControlButtons from './components/ControlButtons';
 
 function App() {
   const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
@@ -11,6 +13,7 @@ function App() {
   
   // Метрики
   const [startTime, setStartTime] = useState<number | null>(null);
+  const [pausedTime, setPausedTime] = useState<number>(0);
   const [wpm, setWpm] = useState<number>(0);
   const [cpm, setCpm] = useState<number>(0);
   const [accuracy, setAccuracy] = useState<number>(100);
@@ -19,21 +22,24 @@ function App() {
   
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  // Используем хук для бесконечной подгрузки слов
+  // Используем хуки
   const { words, isLoading, isLoadingMore, loadInitialWords } = useInfiniteWords(currentWordIndex);
+  const { gameStatus, startGame, pauseGame, restartGame } = useTypingGame();
 
   useEffect(() => {
     loadInitialWords();
   }, []);
 
   useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
+    if (gameStatus === 'playing') {
+      inputRef.current?.focus();
+    }
+  }, [gameStatus]);
 
   // Обновление метрик в реальном времени
   useEffect(() => {
-    if (startTime && currentWordIndex > 0) {
-      const timeElapsed = (Date.now() - startTime) / 1000 / 60;
+    if (startTime && currentWordIndex > 0 && gameStatus === 'playing') {
+      const timeElapsed = (Date.now() - startTime - pausedTime) / 1000 / 60;
       
       const wordsPerMinute = Math.round(currentWordIndex / timeElapsed);
       setWpm(wordsPerMinute);
@@ -46,9 +52,39 @@ function App() {
         setAccuracy(acc);
       }
     }
-  }, [currentWordIndex, startTime, correctChars, totalCharsTyped]);
+  }, [currentWordIndex, startTime, correctChars, totalCharsTyped, gameStatus, pausedTime]);
+
+  const handleStart = () => {
+    startGame();
+    if (!startTime) {
+      setStartTime(Date.now());
+    }
+  };
+
+  const handlePause = () => {
+    pauseGame();
+    if (startTime) {
+      setPausedTime(prev => prev + (Date.now() - startTime));
+    }
+  };
+
+  const handleRestart = () => {
+    restartGame();
+    setCurrentWordIndex(0);
+    setUserInput('');
+    setStartTime(null);
+    setPausedTime(0);
+    setWpm(0);
+    setCpm(0);
+    setAccuracy(100);
+    setTotalCharsTyped(0);
+    setCorrectChars(0);
+    loadInitialWords();
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    if (gameStatus !== 'playing') return;
+
     const value = e.target.value.toLowerCase();
     const currentWord = words[currentWordIndex];
 
@@ -100,13 +136,20 @@ function App() {
       <WordDisplay 
         currentWord={currentWord}
         nextWords={nextWords}
-        userInput={userInput}
+        userInput={gameStatus === 'playing' ? userInput : ''}
       />
 
       <TypingInput 
         value={userInput}
         onChange={handleInputChange}
         inputRef={inputRef}
+      />
+
+      <ControlButtons
+        gameStatus={gameStatus}
+        onStart={handleStart}
+        onPause={handlePause}
+        onRestart={handleRestart}
       />
 
       {isLoadingMore && (
