@@ -1,15 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import './App.css';
-import { fetchWords } from './services/api';
+import { useInfiniteWords } from './hooks/useInfiniteWords';
 import Metrics from './components/Metrics';
 import WordDisplay from './components/WordDisplay';
 import TypingInput from './components/TypingInput';
 
 function App() {
-  const [words, setWords] = useState<string[]>([]);
   const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
   const [userInput, setUserInput] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   
   // Метрики
   const [startTime, setStartTime] = useState<number | null>(null);
@@ -19,10 +17,13 @@ function App() {
   const [totalCharsTyped, setTotalCharsTyped] = useState<number>(0);
   const [correctChars, setCorrectChars] = useState<number>(0);
   
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  // Используем хук для бесконечной подгрузки слов
+  const { words, isLoading, isLoadingMore, loadInitialWords } = useInfiniteWords(currentWordIndex);
 
   useEffect(() => {
-    loadWords();
+    loadInitialWords();
   }, []);
 
   useEffect(() => {
@@ -46,18 +47,6 @@ function App() {
       }
     }
   }, [currentWordIndex, startTime, correctChars, totalCharsTyped]);
-
-  const loadWords = async (): Promise<void> => {
-    try {
-      setIsLoading(true);
-      const fetchedWords = await fetchWords(50);
-      setWords(fetchedWords);
-      setIsLoading(false);
-    } catch (error) {
-      console.error('Failed to load words:', error);
-      setIsLoading(false);
-    }
-  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value.toLowerCase();
@@ -119,6 +108,12 @@ function App() {
         onChange={handleInputChange}
         inputRef={inputRef}
       />
+
+      {isLoadingMore && (
+        <div className="loading-indicator">
+          Loading more words...
+        </div>
+      )}
     </div>
   );
 }
