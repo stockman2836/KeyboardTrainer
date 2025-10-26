@@ -75,7 +75,7 @@ const WordDisplay: React.FC<WordDisplayProps> = ({
       <div className="words-wrapper">
         {words.map((word, wordIndex) => (
           <React.Fragment key={wordIndex}>
-            <span className={getWordClass(wordIndex)}>
+            <span className={`${getWordClass(wordIndex)} ${shouldShowSpaceUnderline(wordIndex) ? 'waiting-space' : ''}`}>
               {word.split('').map((char, charIndex) => (
                 <span
                   key={charIndex}
@@ -85,9 +85,6 @@ const WordDisplay: React.FC<WordDisplayProps> = ({
                 </span>
               ))}
             </span>
-            {shouldShowSpaceUnderline(wordIndex) && (
-              <span className="space-indicator">_</span>
-            )}
           </React.Fragment>
         ))}
       </div>

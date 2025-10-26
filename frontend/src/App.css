@@ -113,6 +113,7 @@ h1 {
   color: #64748b;
   font-weight: 400;
   transition: all 0.3s ease;
+  position: relative;
 }
 
 .word.active {
@@ -123,16 +124,30 @@ h1 {
   opacity: 1;
 }
 
+/* Индикатор пробела через псевдоэлемент */
+.word.waiting-space::after {
+  content: '';
+  position: absolute;
+  right: -15px;
+  bottom: 8px;
+  width: 10px;
+  height: 3px;
+  background: #3b82f6;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+}
+
 .char {
-  transition: all 0.2s ease;
+  transition: border-bottom 0.2s ease;
   color: #64748b;
   position: relative;
+  border-bottom: 3px solid transparent;
+  padding-bottom: 2px;
 }
 
 .char.current {
   color: #94a3b8;
   border-bottom: 3px solid #3b82f6;
-  animation: blink 1s ease-in-out infinite;
+  box-shadow: 0 3px 8px rgba(59, 130, 246, 0.4);
 }
 
 .char.correct {
@@ -148,23 +163,6 @@ h1 {
   padding: 0 2px;
   text-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
   font-weight: 600;
-}
-
-/* Индикатор пробела */
-.space-indicator {
-  color: #3b82f6;
-  font-weight: bold;
-  margin-left: -10px;
-  animation: blink 1s ease-in-out infinite;
-}
-
-@keyframes blink {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.3;
-  }
 }
 
 /* Кнопки управления */
